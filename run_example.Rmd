@@ -1,0 +1,58 @@
+---
+title: "PhaseDenovo"
+knit: (function(input_file, encoding) {
+    out_dir <- 'docs';
+    rmarkdown::render(input_file,
+      encoding=encoding,
+      output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Required library
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(data.table)
+library(tidyverse)
+library(GenomicRanges)
+library(regioneR)
+library(Rsamtools)
+source("global.R")
+```
+
+## Before start:
+
+Input files include:
+
+a bed file stored *de novo* variants position:
+
+--chrom
+
+--start
+
+--end
+
+...
+
+whatshap vcf output which include ps field
+
+```{r INPUT, echo=TRUE}
+path_to_denovo <- "./denovo.bed"
+path_to_gVCF <- "BAB9637_ped_phased-ont-pac.vcf.gz"
+# make sure tabix index file exit for the vcf.gz file
+#Rsamtools::indexTabix(path_to_gVCF,format = "vcf")
+denovo <- fread(path_to_denovo)
+head(denovo)
+```
+
+## Extract long read phased block on single *de novo* position
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+ref_genome = "GRCh38"
+denovo.gr = denovo[9,] %>% regioneR::toGRanges()
+ # get 1Mb upstream and downstream flanking region
+PhaseDenovo(path_to_gVCF,ref_genome,denovo.gr)
+```
