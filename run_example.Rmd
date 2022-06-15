@@ -23,28 +23,15 @@ library(Rsamtools)
 source("global.R")
 ```
 
-## Before start:
-
-Input files include:
-
-a bed file stored *de novo* variants position:
-
---chrom
-
---start
-
---end
-
-...
-
 whatshap vcf output which include ps field
 
 ```{r INPUT, echo=TRUE}
 path_to_denovo <- "./denovo.bed"
-path_to_gVCF <- "BAB9637_ped_phased-ont-pac.vcf.gz"
+path_to_gVCF <- "ped_phased-ont-pac.vcf.gz"
 # make sure tabix index file exit for the vcf.gz file
 #Rsamtools::indexTabix(path_to_gVCF,format = "vcf")
 denovo <- fread(path_to_denovo)
+setnames(denovo,c("V1","V2","V3","V4","V5"),c("chrom","start","end","ref","alt"))
 head(denovo)
 ```
 
@@ -54,5 +41,5 @@ head(denovo)
 ref_genome = "GRCh38"
 denovo.gr = denovo[9,] %>% regioneR::toGRanges()
  # get 1Mb upstream and downstream flanking region
-PhaseDenovo(path_to_gVCF,ref_genome,denovo.gr)
+PhaseDenovo(path_to_gVCF,ref_genome,denovo.gr)%>%as.data.frame()
 ```

@@ -370,23 +370,15 @@ library(GenomicRanges)
 library(regioneR)
 library(Rsamtools)
 source(&quot;global.R&quot;)</code></pre>
-</div>
-<div id="before-start" class="section level2">
-<h2>Before start:</h2>
-<p>Input files include:</p>
-<p>a bed file stored <em>de novo</em> variants position:</p>
-<p>–chrom</p>
-<p>–start</p>
-<p>–end</p>
-<p>…</p>
 <p>whatshap vcf output which include ps field</p>
 <pre class="r"><code>path_to_denovo &lt;- &quot;./denovo.bed&quot;
-path_to_gVCF &lt;- &quot;BAB9637_ped_phased-ont-pac.vcf.gz&quot;
+path_to_gVCF &lt;- &quot;ped_phased-ont-pac.vcf.gz&quot;
 # make sure tabix index file exit for the vcf.gz file
 #Rsamtools::indexTabix(path_to_gVCF,format = &quot;vcf&quot;)
 denovo &lt;- fread(path_to_denovo)
+setnames(denovo,c(&quot;V1&quot;,&quot;V2&quot;,&quot;V3&quot;,&quot;V4&quot;,&quot;V5&quot;),c(&quot;chrom&quot;,&quot;start&quot;,&quot;end&quot;,&quot;ref&quot;,&quot;alt&quot;))
 head(denovo)</code></pre>
-<pre><code>##       V1        V2        V3                           V4   V5
+<pre><code>##    chrom     start       end                          ref  alt
 ## 1: chr18  46882281  46882281 TAATGTTCAAGAATTTAAGGATAAAAAG    T
 ## 2: chr20  41633569  41633569                            C CATT
 ## 3: chr14  91072663  91072663                          AAC    A
@@ -400,21 +392,16 @@ position</h2>
 <pre class="r"><code>ref_genome = &quot;GRCh38&quot;
 denovo.gr = denovo[9,] %&gt;% regioneR::toGRanges()
  # get 1Mb upstream and downstream flanking region
-PhaseDenovo(path_to_gVCF,ref_genome,denovo.gr)</code></pre>
+PhaseDenovo(path_to_gVCF,ref_genome,denovo.gr)%&gt;%as.data.frame()</code></pre>
 <pre><code>## [1] &quot;**Step1:read vcf file**&quot;
 ## [1] &quot;**Step2:assign haplotype based on majority vote**&quot;
 ## [1] 1
 ## [1] 2
 ## [1] 3</code></pre>
-<pre><code>## GRanges object with 1 range and 5 metadata columns:
-##     seqnames    ranges strand |          V4          V5              ps
-##        &lt;Rle&gt; &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt; &lt;character&gt;        &lt;matrix&gt;
-##   1     chr1 164465932      * |           C           T 163844148:NA:NA
-##              gt         hap
-##        &lt;matrix&gt; &lt;character&gt;
-##   1 0|1:0/0:0/0 0|1:BAB9639
-##   -------
-##   seqinfo: 1 sequence from an unspecified genome; no seqlengths</code></pre>
+<pre><code>##   seqnames     start       end width strand ref alt     ps.V1 ps.V2 ps.V3
+## 1     chr1 164465932 164465932     1      *   C   T 163844148    NA    NA
+##   gt.BAB9637 gt.BAB9638 gt.BAB9639         hap
+## 1        0|1        0/0        0/0 0|1:BAB9639</code></pre>
 </div>
 
 
