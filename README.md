@@ -21,7 +21,7 @@ run whatshap using short-read and long-read data to get the physical phased vari
 
 ## Run on Rstudio
 
-[Example](https://cluhaowie.github.io/PhaseDenovo/run_example.html) of running the script in Rstudio.
+[Example](https://bcm-lupskilab.github.io/PhaseDenovo/) of running the script in Rstudio.
 
 ## Session infor
 > 
